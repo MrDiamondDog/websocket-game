@@ -1,5 +1,5 @@
 import {WebSocket, WebSocketServer} from "ws";
-import {findGameWithCode} from "./game";
+import {findGameWithCode, findPlayerInGame} from "./game";
 
 export const wssPort = 8080;
 export const wss = new WebSocketServer({
@@ -14,6 +14,7 @@ wss.on("connection", (ws: WebSocket, req) => {
     const url = new URL(req.url, "http://localhost");
     const key = url.searchParams.get("key");
     const code = url.searchParams.get("code");
+    const name = url.searchParams.get("name");
 
     const game = findGameWithCode(code);
     if (!game) {
@@ -28,9 +29,18 @@ wss.on("connection", (ws: WebSocket, req) => {
         return;
     }
 
-    console.log("Someone joined room " + code);
-    game.players.push(ws);
+    if (findPlayerInGame(game, name!)) {
+        ws.send("Name already taken");
+        ws.close();
+        return;
+    }
+
+    console.log(name + " joined room " + code);
+
+    game.players.push({ws, name, isVip: game.players.length === 0});
+
     ws.send("ok");
+    if (game.players.length === 1) ws.send("vip");
 
     ws.on("message", (message) => {
         console.log(`Received message: ${message}`);
@@ -38,7 +48,7 @@ wss.on("connection", (ws: WebSocket, req) => {
     });
 
     ws.on("close", () => {
-        game.players.splice(game.players.indexOf(ws), 1);
-        console.log("Someone left room " + code);
+        game.players.splice(game.players.indexOf(findPlayerInGame(game, name)!), 1);
+        console.log(name + " left room " + code);
     });
 });

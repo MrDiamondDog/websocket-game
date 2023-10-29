@@ -9,14 +9,26 @@
         <div id="join">
             <h1>Join</h1>
             <input id="join-code" placeholder="Code" />
-            <button id="join">Join</button>
+            <input id="join-name" placeholder="Name" />
+            <button id="join-button">Join</button>
             <p id="join-error"></p>
+        </div>
+        <div id="host" style="display: none">
+            <h1>Host</h1>
+            <select id="host-game">
+                <option name="fucking-stupid">Fucking Stupid</option>
+            </select>
+            <button id="host-button">Host</button>
+            <p id="host-code"></p>
+            <p id="host-error"></p>
         </div>
         <div id="game" style="display: none">
             <h1>Game</h1>
-            <div id="game-code"></div>
+            <p id="game-code"></p>
+            <button id="game-start" style="display: none">Start</button>
             <button id="game-leave">Leave</button>
         </div>
+        <button id="switcher">Host</button>
 
         <script>
             var exports = {};

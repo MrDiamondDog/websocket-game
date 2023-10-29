@@ -1,20 +1,42 @@
 import {WebSocket} from "ws";
 import crypto from "crypto";
 
-interface Game {
+export interface Game {
     code: string;
-    players: WebSocket[];
+    players: Player[];
     key: string;
+}
+
+export interface Player {
+    ws: WebSocket;
+    isVip: boolean;
+    name: string;
 }
 
 export function findGameWithCode(code: string): Game | undefined {
     return games.find((game) => game.code === code);
 }
 
-export const games: Game[] = [
-    {
-        code: "1234",
-        players: [],
-        key: crypto.randomUUID()
-    }
-];
+export function findPlayerInGame(game: Game, name: string): Player | undefined {
+    return game.players.find((player) => player.name === name);
+}
+
+export function generateGameKey(): string {
+    return crypto.randomBytes(32).toString("hex");
+}
+
+export function generateGameCode(): string {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let code = "";
+
+    do {
+        code = "";
+        for (let i = 0; i < 4; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+    } while (findGameWithCode(code) !== undefined);
+
+    return code;
+}
+
+export const games: Game[] = [];
