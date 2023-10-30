@@ -37,10 +37,12 @@ wss.on("connection", (ws: WebSocket, req) => {
 
     console.log(name + " joined room " + code);
 
-    game.players.push({ws, name, isVip: game.players.length === 0});
+    if (game.players.length === 0) game.host = {ws, name};
+    game.players.push({ws, name});
 
     ws.send("ok");
-    if (game.players.length === 1) ws.send("vip");
+
+    game.host.ws.send("player:" + name);
 
     ws.on("message", (message) => {
         console.log(`Received message: ${message}`);

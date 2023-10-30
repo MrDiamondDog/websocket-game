@@ -4,12 +4,12 @@ import crypto from "crypto";
 export interface Game {
     code: string;
     players: Player[];
+    host: Player;
     key: string;
 }
 
 export interface Player {
     ws: WebSocket;
-    isVip: boolean;
     name: string;
 }
 

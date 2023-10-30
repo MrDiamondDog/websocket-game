@@ -16,22 +16,24 @@ export const Elements = {
         createButton: elem<HTMLButtonElement>("#host-button"),
         game: elem<HTMLSelectElement>("#host-game"),
         code: elem("#host-code"),
-        error: elem("#host-error")
+        error: elem("#host-error"),
+        name: elem<HTMLInputElement>("#host-name")
     },
     game: {
         container: elem("#game"),
         code: elem("#game-code"),
         startGame: elem<HTMLButtonElement>("#game-start"),
-        leave: elem<HTMLButtonElement>("#game-leave")
+        leave: elem<HTMLButtonElement>("#game-leave"),
+        players: elem("#game-players")
     }
 };
 
 export let isHosting = false;
-Elements.switcher.addEventListener("click", () => {
+Elements.switcher.on("click", () => {
     isHosting = !isHosting;
-    Elements.switcher.innerText = isHosting ? "Join" : "Host";
-    Elements.join.container.style.display = isHosting ? "none" : "block";
-    Elements.host.container.style.display = isHosting ? "block" : "none";
+    Elements.switcher.text(isHosting ? "Join" : "Host");
+    Elements.join.container.setVisible(!isHosting);
+    Elements.host.container.setVisible(isHosting);
 });
 
 initJoin();
